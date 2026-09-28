@@ -3,777 +3,463 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador TEPV-ASCEND | Test Vocacional</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Test Vocacional | CGE ASCEND</title>
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .custom-radio:checked + label {
-            background-color: #2563eb;
-            color: white;
-            border-color: #2563eb;
-            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+        :root {
+            --cge-dark: #001229;
+            --cge-navy: #021B3B;
+            --cge-blue: #0066FF;
+            --cge-yellow: #FFC000;
+            --cge-yellow-hover: #E6AC00;
+            --cge-gray-bg: #F4F6F9;
+            --cge-card-border: #E2E8F0;
+            --cge-text-dark: #0A192F;
+            --cge-text-muted: #64748B;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: var(--cge-gray-bg);
+            color: var(--cge-text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 780px;
+            background-color: #FFFFFF;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(2, 27, 59, 0.08);
+            overflow: hidden;
+            border: 1px solid var(--cge-card-border);
+        }
+
+        /* HEADER BRANDING */
+        .header {
+            background-color: var(--cge-navy);
+            color: #FFFFFF;
+            padding: 32px 28px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .header h1 span {
+            color: #4DA6FF;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            color: #CBD5E1;
+            font-weight: 400;
+        }
+
+        /* CONTROL BAR (REINICIAR) */
+        .control-bar {
+            display: flex;
+            justify-content: flex-end;
+            padding: 12px 24px;
+            background-color: #F8FAFC;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .btn-restart {
+            background-color: transparent;
+            border: 1px solid #CBD5E1;
+            color: var(--cge-text-muted);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-restart:hover {
+            background-color: #E2E8F0;
+            color: var(--cge-navy);
+        }
+
+        /* CONTENT & PROGRESS */
+        .content {
+            padding: 28px;
+        }
+
+        .progress-box {
+            margin-bottom: 24px;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--cge-navy);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .progress-bar-bg {
+            height: 8px;
+            background-color: #E2E8F0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #0066FF 0%, #00C6FF 100%);
+            transition: width 0.3s ease;
+        }
+
+        /* QUESTION CARDS */
+        .question-card {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .question-card.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--cge-navy);
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        /* OPTIONS */
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background-color: #FFFFFF;
+            border: 2px solid var(--cge-card-border);
+            border-radius: 10px;
+            padding: 16px 20px;
+            text-align: left;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--cge-text-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .option-btn:hover {
+            border-color: var(--cge-blue);
+            background-color: #F0F7FF;
+            color: var(--cge-blue);
+        }
+
+        .option-btn::after {
+            content: '→';
+            font-size: 1.1rem;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .option-btn:hover::after {
+            opacity: 1;
+        }
+
+        /* RESULTS SECTION */
+        .result-container {
+            display: none;
+            text-align: center;
+            padding: 10px 0;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .result-badge {
+            display: inline-block;
+            background-color: #E0F2FE;
+            color: #0369A1;
+            font-weight: 700;
+            font-size: 0.8rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        .result-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--cge-navy);
+            margin-bottom: 12px;
+        }
+
+        .result-card {
+            background-color: #F8FAFC;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0 28px 0;
+            text-align: left;
+        }
+
+        .result-career-name {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--cge-blue);
+            margin-bottom: 8px;
+        }
+
+        .result-compatibility {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #16A34A;
+            margin-bottom: 14px;
+        }
+
+        .result-desc {
+            font-size: 0.95rem;
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        .btn-cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background-color: var(--cge-yellow);
+            color: var(--cge-navy);
+            font-weight: 800;
+            font-size: 1rem;
+            padding: 16px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(255, 192, 0, 0.3);
+            width: 100%;
+        }
+
+        .btn-cta:hover {
+            background-color: var(--cge-yellow-hover);
+            transform: translateY(-2px);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            .header { padding: 24px 16px; }
+            .header h1 { font-size: 1.3rem; }
+            .content { padding: 20px 16px; }
+            .question-title { font-size: 1.05rem; }
+            .option-btn { font-size: 0.9rem; padding: 14px 16px; }
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+<body>
 
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
-        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <div class="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-xl shadow-sm">
-                    A
-                </div>
-                <div>
-                    <h1 class="font-bold text-slate-800 text-base sm:text-lg leading-tight">TEPV-ASCEND</h1>
-                    <p class="text-xs text-slate-500">Test Exploratorio de Perfil Vocacional</p>
-                </div>
-            </div>
-            
-            <div class="flex items-center space-x-2">
-                <button id="btn-demo" onclick="abrirModalDemo()" class="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium py-1.5 px-3 rounded-lg border border-indigo-200 transition-colors flex items-center gap-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                    <span class="hidden sm:inline">Modo</span> Simulación
-                </button>
-                <button id="btn-reset" onclick="reiniciarTest()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-1.5 px-3 rounded-lg border border-slate-200 transition-colors">
-                    Reiniciar
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <main class="max-w-4xl mx-auto w-full px-4 py-6 flex-grow">
-
-        <!-- BARRA DE PROGRESO GLOBAL -->
-        <div id="progress-container" class="mb-6 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-            <div class="flex justify-between items-center mb-2 text-xs sm:text-sm font-medium text-slate-600">
-                <span id="current-block-label">Bloque 1 de 5: Valores Profesionales</span>
-                <span id="progress-percent" class="text-blue-600 font-semibold">0% completado</span>
-            </div>
-            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                <div id="progress-bar" class="bg-blue-600 h-full transition-all duration-300 w-0"></div>
-            </div>
-            <div class="flex justify-between mt-2 text-[11px] text-slate-400 font-medium overflow-x-auto gap-1">
-                <span id="step-V" class="text-blue-600 font-bold">1. Valores</span>
-                <span id="step-P">2. Preferencias</span>
-                <span id="step-M">3. Motivación</span>
-                <span id="step-I">4. Intereses</span>
-                <span id="step-A">5. Aptitudes</span>
-            </div>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>TEST DE ORIENTACIÓN <span>VOCACIONAL</span></h1>
+            <p>Descubre cuál de nuestras carreras se adapta mejor a tu perfil y objetivos</p>
         </div>
 
-        <!-- INTRODUCCIÓN / CONSENTIMIENTO -->
-        <div id="sec-intro" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm">
-            <div class="inline-block px-3 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full mb-3">
-                Exploración Vocacional Institucional
-            </div>
-            <h2 class="text-2xl font-bold text-slate-900 mb-3">Bienvenido a tu Exploración de Perfil Profesional</h2>
-            <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-4">
-                El instrumento **TEPV-ASCEND** evalúa tus intereses, aptitudes percibidas, valores, preferencias laborales y motivación profesional a través de 70 afirmaciones rápidas.
-            </p>
-            
-            <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg mb-6">
-                <div class="flex">
-                    <div class="flex-shrink-0">
-                        <svg class="h-5 w-5 text-amber-500" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-                        </svg>
-                    </div>
-                    <div class="ml-3">
-                        <h3 class="text-xs font-semibold text-amber-800 uppercase tracking-wider">Consideración Importante</h3>
-                        <p class="text-xs text-amber-700 mt-1 leading-snug">
-                            Este cuestionario es una herramienta de autoconocimiento. Sus resultados representan una aproximación orientativa basada en tus respuestas y no constituyen un diagnóstico ni determinan una carrera de manera definitiva.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="space-y-2 mb-6 text-xs sm:text-sm text-slate-600">
-                <p>💡 **Instrucciones:** No existen respuestas correctas o incorrectas. Responde espontáneamente según la siguiente escala:</p>
-                <div class="grid grid-cols-5 gap-1 sm:gap-2 text-center text-xs pt-2">
-                    <div class="bg-slate-100 p-2 rounded">1. Totalmente en desacuerdo</div>
-                    <div class="bg-slate-100 p-2 rounded">2. En desacuerdo</div>
-                    <div class="bg-slate-100 p-2 rounded">3. Ni acuerdo / desacuerdo</div>
-                    <div class="bg-slate-100 p-2 rounded">4. De acuerdo</div>
-                    <div class="bg-slate-100 p-2 rounded">5. Totalmente de acuerdo</div>
-                </div>
-            </div>
-
-            <button onclick="iniciarTest()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-xl shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center space-x-2">
-                <span>Comenzar el Cuestionario</span>
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-            </button>
+        <!-- CONTROL BAR (SOLO REINICIAR) -->
+        <div class="control-bar">
+            <button class="btn-restart" onclick="restartTest()">↻ Reiniciar</button>
         </div>
 
-        <!-- CONTENEDOR DINÁMICO DE PREGUNTAS -->
-        <div id="sec-questions" class="hidden space-y-6">
-            <div id="block-header" class="bg-slate-900 text-white p-5 rounded-2xl shadow-sm">
-                <span id="block-badge" class="text-xs uppercase font-bold tracking-wider text-blue-400">BLOQUE 1</span>
-                <h3 id="block-title" class="text-xl font-bold mt-1">Valores Profesionales</h3>
-                <p id="block-desc" class="text-xs text-slate-300 mt-1">Evalúa qué elementos consideras fundamentales en tu entorno laboral y desarrollo futuro.</p>
-            </div>
-
-            <div id="questions-list" class="space-y-4">
-                <!-- Las preguntas se renderizan dinámicamente -->
-            </div>
-
-            <!-- NAVEGACIÓN ENTRE BLOQUES -->
-            <div class="flex justify-between items-center pt-4">
-                <button id="btn-prev" onclick="bloqueAnterior()" class="bg-white hover:bg-slate-100 text-slate-700 font-medium py-2.5 px-5 rounded-xl border border-slate-300 transition-colors flex items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                    Anterior
-                </button>
-
-                <button id="btn-next" onclick="siguienteBloque()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-xl shadow-md transition-all flex items-center gap-1">
-                    <span>Siguiente</span>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                </button>
-            </div>
-        </div>
-
-        <!-- PANTALLA DE RESULTADOS DEL PARTICIPANTE -->
-        <div id="sec-results" class="hidden space-y-6">
-            <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm text-center">
-                <div class="inline-flex items-center justify-center w-12 h-12 bg-blue-100 text-blue-600 rounded-full mb-3">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="content">
+            <!-- PROGRESS -->
+            <div class="progress-box" id="progress-container">
+                <div class="progress-text">
+                    <span id="progress-step">PREGUNTA 1 DE 5</span>
+                    <span id="progress-percent">20%</span>
                 </div>
-                <h2 class="text-2xl font-bold text-slate-900">Tu Perfil de Afinidad Profesional</h2>
-                <p class="text-xs text-slate-500 mt-1">Resultado parcial y preliminar del instrumento TEPV-ASCEND</p>
-
-                <!-- CARD DE RESULTADO PRINCIPAL -->
-                <div class="mt-6 p-6 bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl shadow-lg text-left relative overflow-hidden">
-                    <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl"></div>
-                    <span class="text-xs font-semibold text-blue-400 uppercase tracking-wider">Perfil Predominante Detectado</span>
-                    <h3 id="res-profile-title" class="text-2xl sm:text-3xl font-extrabold mt-1 text-white">Cargando...</h3>
-                    <p id="res-profile-desc" class="text-sm text-slate-300 mt-2 leading-relaxed">...</p>
-                </div>
-
-                <!-- BARRAS DE AFINIDAD -->
-                <div class="mt-8 text-left space-y-4">
-                    <h4 class="text-sm font-bold text-slate-800 uppercase tracking-wider">Nivel Relativo de Afinidad por Área</h4>
-                    
-                    <div>
-                        <div class="flex justify-between text-xs font-semibold mb-1">
-                            <span class="text-slate-700">Tecnológico Digital (TD)</span>
-                            <span id="bar-val-td" class="text-blue-600">0%</span>
-                        </div>
-                        <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
-                            <div id="bar-fill-td" class="bg-blue-600 h-full transition-all duration-700 w-0"></div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="flex justify-between text-xs font-semibold mb-1">
-                            <span class="text-slate-700">Comercial Empresarial (CE)</span>
-                            <span id="bar-val-ce" class="text-emerald-600">0%</span>
-                        </div>
-                        <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
-                            <div id="bar-fill-ce" class="bg-emerald-600 h-full transition-all duration-700 w-0"></div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="flex justify-between text-xs font-semibold mb-1">
-                            <span class="text-slate-700">Humano, Salud y Servicio (HS)</span>
-                            <span id="bar-val-hs" class="text-purple-600">0%</span>
-                        </div>
-                        <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
-                            <div id="bar-fill-hs" class="bg-purple-600 h-full transition-all duration-700 w-0"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- MENSAJE INSTITUCIONAL DE ORIENTACIÓN -->
-                <div class="mt-8 bg-blue-50 p-4 rounded-xl border border-blue-100 text-left text-xs text-blue-900 leading-relaxed">
-                    <p class="font-semibold mb-1">📍 Siguiente paso para definir tu proyecto académico:</p>
-                    <p>Este resultado es una primera aproximación orientativa. Para revisar la correspondencia con programas específicos, plan de estudios y oportunidades profesionales, te invitamos a agendar una sesión personalizada con un asesor vocacional.</p>
-                </div>
-
-                <!-- BOTÓN DE ACCIÓN REDIRECCIÓN A WHATSAPP -->
-                <div class="mt-6">
-                    <a id="btn-whatsapp" href="#" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-emerald-600/20 transition-all flex items-center justify-center gap-2">
-                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></a text>
-                        <span>Hablar con un Asesor para Discutir Asignación</span>
-                    </a>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-bar"></div>
                 </div>
             </div>
 
-            <!-- MODAL / DESPLEGABLE MODO ASESOR (INTERNO) -->
-            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-                <button onclick="toggleModoAsesor()" class="w-full p-4 bg-slate-100 hover:bg-slate-200 flex justify-between items-center transition-colors text-left">
-                    <div class="flex items-center space-x-2">
-                        <span class="bg-slate-800 text-white text-[10px] font-bold px-2 py-0.5 rounded">MODO ASESOR</span>
-                        <span class="text-xs font-bold text-slate-800">Métricas Internas y Desglose Matemático Real</span>
+            <!-- QUESTIONS -->
+            <div id="questions-wrapper">
+                <!-- P1 -->
+                <div class="question-card active" data-question="0">
+                    <div class="question-title">1. ¿Qué tipo de problemas o tareas te motivan más en tu día a día?</div>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="answerQuestion('software')">Crear sistemas, automatizar procesos o resolver acertijos lógicos y técnicos.</button>
+                        <button class="option-btn" onclick="answerQuestion('ventas')">Convencer a personas, diseñar estrategias comerciales y cerrar negociaciones.</button>
                     </div>
-                    <svg id="icon-asesor-arrow" class="w-5 h-5 text-slate-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                </button>
+                </div>
 
-                <div id="asesor-content" class="hidden p-6 space-y-6 bg-slate-50 border-t border-slate-200 text-xs">
-                    
-                    <!-- RESUMEN DE REGLAS APLICADAS -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <div class="bg-white p-3 rounded-lg border border-slate-200">
-                            <span class="text-slate-400 font-semibold block">Diferencia 1° vs 2°</span>
-                            <span id="m-diff" class="text-lg font-bold text-slate-800">0.00%</span>
-                        </div>
-                        <div class="bg-white p-3 rounded-lg border border-slate-200">
-                            <span class="text-slate-400 font-semibold block">Perfil Dual Activado</span>
-                            <span id="m-dual" class="text-lg font-bold text-slate-800">No</span>
-                        </div>
-                        <div class="bg-white p-3 rounded-lg border border-slate-200">
-                            <span class="text-slate-400 font-semibold block">Dimensión Más Alta</span>
-                            <span id="m-top-dim" class="text-lg font-bold text-slate-800">-</span>
-                        </div>
+                <!-- P2 -->
+                <div class="question-card" data-question="1">
+                    <div class="question-title">2. Si pudieras elegir una herramienta para trabajar diariamente, ¿cuál elegirías?</div>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="answerQuestion('software')">Un entorno de desarrollo de código, bases de datos y herramientas de software.</button>
+                        <button class="option-btn" onclick="answerQuestion('ventas')">Redes sociales profesionales, CRM de ventas y métricas de comportamiento digital.</button>
                     </div>
+                </div>
 
-                    <!-- TABLA DETALLADA DE CÁLCULO -->
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left bg-white rounded-lg overflow-hidden border border-slate-200">
-                            <thead class="bg-slate-800 text-white text-[11px] uppercase">
-                                <tr>
-                                    <th class="p-2.5">Dimensión</th>
-                                    <th class="p-2.5">Peso</th>
-                                    <th class="p-2.5">TD (Bruto / Máx $\rightarrow$ %Norm)</th>
-                                    <th class="p-2.5">CE (Bruto / Máx $\rightarrow$ %Norm)</th>
-                                    <th class="p-2.5">HS (Bruto / Máx $\rightarrow$ %Norm)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="asesor-table-body" class="divide-y divide-slate-200 text-slate-700">
-                                <!-- Filas de desglose -->
-                            </tbody>
-                            <tfoot class="bg-slate-100 font-bold text-slate-900 border-t-2 border-slate-300">
-                                <tr>
-                                    <td class="p-2.5">RESULTADO FINAL PONDERADO</td>
-                                    <td class="p-2.5">100%</td>
-                                    <td id="m-final-td" class="p-2.5 text-blue-700">0.00%</td>
-                                    <td id="m-final-ce" class="p-2.5 text-emerald-700">0.00%</td>
-                                    <td id="m-final-hs" class="p-2.5 text-purple-700">0.00%</td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                <!-- P3 -->
+                <div class="question-card" data-question="2">
+                    <div class="question-title">3. ¿En qué entorno te visualizas aportando mayor valor?</div>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="answerQuestion('software')">Construyendo y optimizando la infraestructura digital o aplicaciones de una empresa.</button>
+                        <button class="option-btn" onclick="answerQuestion('ventas')">Liderando la atracción de clientes y posicionando productos en canales digitales.</button>
                     </div>
+                </div>
 
-                    <p class="text-[11px] text-slate-500 italic">
-                        * Ponderación Oficial: Intereses (30%), Aptitudes (30%), Valores (15%), Preferencias (15%), Motivación (10%).
-                    </p>
+                <!-- P4 -->
+                <div class="question-card" data-question="3">
+                    <div class="question-title">4. ¿Cuál de estos logros personales te generaría mayor satisfacción?</div>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="answerQuestion('software')">Lanzar una aplicación o software funcional que miles de personas utilicen sin fallas.</button>
+                        <button class="option-btn" onclick="answerQuestion('ventas')">Superar las metas de ventas de una empresa mediante una campaña digital exitosa.</button>
+                    </div>
+                </div>
+
+                <!-- P5 -->
+                <div class="question-card" data-question="4">
+                    <div class="question-title">5. ¿Cómo te describirías en tu forma de pensar y actuar?</div>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="answerQuestion('software')">Analítico, estructurado, enfocado en los detalles y en la lógica.</button>
+                        <button class="option-btn" onclick="answerQuestion('ventas')">Persuasivo, empático, orientado a resultados y a la comunicación.</button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-    </main>
+            <!-- RESULT SCREEN -->
+            <div class="result-container" id="result-screen">
+                <span class="result-badge">Resultado del Test</span>
+                <h2 class="result-title">¡Hemos encontrado tu ruta ideal!</h2>
 
-    <!-- FOOTER -->
-    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
-        <div class="max-w-5xl mx-auto px-4">
-            TEPV-ASCEND &copy; 2026 - Manual Técnico Integrado | Modelo No Determinista de Orientación Vocacional
-        </div>
-    </footer>
+                <div class="result-card">
+                    <div class="result-career-name" id="career-title">Tecnología Superior en ...</div>
+                    <div class="result-compatibility" id="career-compat">Afinidad detectada: 100%</div>
+                    <div class="result-desc" id="career-desc">Cargando descripción...</div>
+                </div>
 
-    <!-- MODAL MODO SIMULACIÓN / AUTOCOMPLETADO -->
-    <div id="modal-demo" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
-            <h3 class="text-lg font-bold text-slate-900">Simulación / Autocompletado Rápido</h3>
-            <p class="text-xs text-slate-600">Selecciona un patrón de prueba para completar los 70 ítems al instante y validar las reglas del motor de cálculo:</p>
-            
-            <div class="space-y-2">
-                <button onclick="ejecutarDemo('TD')" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:border-blue-500 hover:bg-blue-50 transition-colors flex justify-between items-center">
-                    <div>
-                        <span class="font-bold text-xs text-slate-800 block">Perfil Tecnológico Digital (TD)</span>
-                        <span class="text-[11px] text-slate-500">Puntajes altos en ítems digitales y análisis</span>
-                    </div>
-                    <span class="text-blue-600 text-xs font-semibold">Simular</span>
-                </button>
-
-                <button onclick="ejecutarDemo('CE')" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 transition-colors flex justify-between items-center">
-                    <div>
-                        <span class="font-bold text-xs text-slate-800 block">Perfil Comercial Empresarial (CE)</span>
-                        <span class="text-[11px] text-slate-500">Puntajes altos en negociación y negocios</span>
-                    </div>
-                    <span class="text-emerald-600 text-xs font-semibold">Simular</span>
-                </button>
-
-                <button onclick="ejecutarDemo('HS')" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:border-purple-500 hover:bg-purple-50 transition-colors flex justify-between items-center">
-                    <div>
-                        <span class="font-bold text-xs text-slate-800 block">Perfil Humano y Salud (HS)</span>
-                        <span class="text-[11px] text-slate-500">Puntajes altos en bienestar y servicio</span>
-                    </div>
-                    <span class="text-purple-600 text-xs font-semibold">Simular</span>
-                </button>
-
-                <button onclick="ejecutarDemo('DUAL')" class="w-full text-left p-3 rounded-xl border border-amber-200 hover:border-amber-500 hover:bg-amber-50 transition-colors flex justify-between items-center">
-                    <div>
-                        <span class="font-bold text-xs text-slate-800 block">Caso Perfil Dual (&Delta; &le; 5.0%)</span>
-                        <span class="text-[11px] text-slate-500">Puntajes equilibrados entre TD y CE</span>
-                    </div>
-                    <span class="text-amber-600 text-xs font-semibold">Simular</span>
-                </button>
-
-                <button onclick="ejecutarDemo('RANDOM')" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:border-slate-400 hover:bg-slate-100 transition-colors flex justify-between items-center">
-                    <div>
-                        <span class="font-bold text-xs text-slate-800 block">Respuestas Aleatorias</span>
-                        <span class="text-[11px] text-slate-500">Genera respuestas variadas (1 a 5)</span>
-                    </div>
-                    <span class="text-slate-600 text-xs font-semibold">Simular</span>
-                </button>
+                <a href="https://cge.edu.ec/" target="_blank" class="btn-cta">
+                    DESCUBRIR MI RUTA ASCEND →
+                </a>
             </div>
-
-            <button onclick="cerrarModalDemo()" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium text-xs rounded-xl transition-colors">
-                Cancelar
-            </button>
         </div>
     </div>
 
     <script>
-        /* BASE DE DATOS DE LOS 70 ÍTEMS Y MATRIZ FÍJA TEPV-ASCEND */
-        const MATRIZ_ITEMS = [
-            // VALORES PROFESIONALES (V01 - V10)
-            { code: "V01", dim: "V", text: "Para mí es important aprender constantemente a lo largo de mi vida profesional.", td: 1, ce: 1, hs: 1 },
-            { code: "V02", dim: "V", text: "Valoro una profesión que me permita utilizar tecnología para resolver necesidades.", td: 1, ce: 0, hs: 0 },
-            { code: "V03", dim: "V", text: "Para mí es importante contribuir al bienestar de otras personas mediante mi trabajo.", td: 0, ce: 0, hs: 1 },
-            { code: "V04", dim: "V", text: "Valoro tener oportunidades para crear proyectos o iniciativas propias.", td: 0, ce: 1, hs: 0 },
-            { code: "V05", dim: "V", text: "Considero importante desarrollar una profesión que me permita resolver problemas.", td: 1, ce: 0, hs: 0 },
-            { code: "V06", dim: "V", text: "Valoro una profesión que implique comunicación frecuente con otras personas.", td: 0, ce: 1, hs: 1 },
-            { code: "V07", dim: "V", text: "Para mí es importante contar con oportunidades de crecimiento profesional y económico.", td: 1, ce: 1, hs: 1 },
-            { code: "V08", dim: "V", text: "Valoro trabajar en actividades que permitan innovar o crear nuevas soluciones.", td: 1, ce: 0, hs: 0 },
-            { code: "V09", dim: "V", text: "Considero importante que mi trabajo genere un aporte positivo a la sociedad.", td: 0, ce: 0, hs: 1 },
-            { code: "V10", dim: "V", text: "Valoro una trayectoria profesional que combine conocimientos de diferentes áreas.", td: 1, ce: 1, hs: 1 },
-
-            // PREFERENCIAS LABORALES (P01 - P10)
-            { code: "P01", dim: "P", text: "Preferiría trabajar creando o utilizando soluciones digitales para resolver necesidades.", td: 1, ce: 0, hs: 0 },
-            { code: "P02", dim: "P", text: "Preferiría trabajar en actividades donde tenga contacto frecuente con clientes o usuarios.", td: 0, ce: 1, hs: 0 },
-            { code: "P03", dim: "P", text: "Prefiero analizar información antes de tomar una decisión importante.", td: 1, ce: 0, hs: 0 },
-            { code: "P04", dim: "P", text: "Me gustaría participar en la organización de proyectos, procesos o actividades.", td: 1, ce: 1, hs: 1 },
-            { code: "P05", dim: "P", text: "Me atraen ambientes laborales relacionados con bienestar, atención o servicio a personas.", td: 0, ce: 0, hs: 1 },
-            { code: "P06", dim: "P", text: "Prefiero aprender mediante actividades prácticas y aplicación directa.", td: 1, ce: 1, hs: 1 },
-            { code: "P07", dim: "P", text: "Me gustaría presentar propuestas, negociar y defender ideas ante otras personas.", td: 0, ce: 1, hs: 0 },
-            { code: "P08", dim: "P", text: "Me atraen los ambientes donde se utilizan nuevas tecnologías o formas de trabajo.", td: 1, ce: 0, hs: 0 },
-            { code: "P09", dim: "P", text: "Prefiero trabajos que me planteen problemas o situaciones diferentes con frecuencia.", td: 1, ce: 0, hs: 0 },
-            { code: "P10", dim: "P", text: "Me interesa la posibilidad de desarrollar proyectos independientes o emprender.", td: 0, ce: 1, hs: 0 },
-
-            // MOTIVACIÓN PROFESIONAL (M01 - M10)
-            { code: "M01", dim: "M", text: "Cuando un tema me interesa, busco información adicional por iniciativa propia.", td: 1, ce: 1, hs: 1 },
-            { code: "M02", dim: "M", text: "Estoy dispuesto a practicar varias veces hasta mejorar una habilidad.", td: 1, ce: 1, hs: 1 },
-            { code: "M03", dim: "M", text: "Puedo mantener mi esfuerzo cuando una actividad de aprendizaje se vuelve difícil.", td: 1, ce: 1, hs: 1 },
-            { code: "M04", dim: "M", text: "Me adapto cuando debo aprender una herramienta o procedimiento nuevo.", td: 1, ce: 1, hs: 1 },
-            { code: "M05", dim: "M", text: "Me motiva alcanzar metas que requieren varios pasos y constancia.", td: 1, ce: 1, hs: 0 },
-            { code: "M06", dim: "M", text: "Estoy dispuesto a actualizar mis conocimientos durante mi vida profesional.", td: 1, ce: 1, hs: 1 },
-            { code: "M07", dim: "M", text: "Me motiva aprender habilidades que puedan aplicarse en situaciones reales.", td: 1, ce: 1, hs: 0 },
-            { code: "M08", dim: "M", text: "Busco mejorar una habilidad aunque ya tenga un nivel básico en ella.", td: 1, ce: 1, hs: 1 },
-            { code: "M09", dim: "M", text: "Me resulta motivador encontrar soluciones a problemas que no conozco.", td: 1, ce: 1, hs: 0 },
-            { code: "M10", dim: "M", text: "Me interesa construir progresivamente un proyecto profesional coherente con mis fortalezas.", td: 1, ce: 1, hs: 1 },
-
-            // INTERESES VOCACIONALES (I01 - I20)
-            { code: "I01", dim: "I", text: "Me interesa comprender cómo funcionan las aplicaciones, programas o sistemas digitales.", td: 1, ce: 0, hs: 0 },
-            { code: "I02", dim: "I", text: "Disfruto buscar soluciones utilizando herramientas tecnológicas.", td: 1, ce: 0, hs: 0 },
-            { code: "I03", dim: "I", text: "Me gustaría crear una herramienta digital que facilite una actividad cotidiana.", td: 1, ce: 0, hs: 0 },
-            { code: "I04", dim: "I", text: "Me interesa analizar datos o información para encontrar patrones o respuestas.", td: 1, ce: 0, hs: 0 },
-            { code: "I05", dim: "I", text: "Me interesa comprender cómo se organizan y mejoran los procesos de una organización.", td: 1, ce: 0, hs: 0 },
-            { code: "I06", dim: "I", text: "Me interesa crear estrategias para promocionar productos o servicios.", td: 0, ce: 1, hs: 0 },
-            { code: "I07", dim: "I", text: "Disfruto comunicar ideas a personas con necesidades o intereses diferentes.", td: 0, ce: 1, hs: 1 },
-            { code: "I08", dim: "I", text: "Me interesa comprender por qué los clientes toman determinadas decisiones.", td: 0, ce: 1, hs: 0 },
-            { code: "I09", dim: "I", text: "Me gustaría participar en proyectos comerciales desarrollados mediante canales digitales.", td: 0, ce: 1, hs: 0 },
-            { code: "I10", dim: "I", text: "Me interesa conocer cómo se puede iniciar y desarrollar un emprendimiento.", td: 0, ce: 1, hs: 0 },
-            { code: "I11", dim: "I", text: "Me interesan actividades relacionadas con bienestar, cuidado y calidad de vida.", td: 0, ce: 0, hs: 1 },
-            { code: "I12", dim: "I", text: "Me interesa orientar o apoyar a personas cuando necesitan ayuda.", td: 0, ce: 0, hs: 1 },
-            { code: "I13", dim: "I", text: "Me interesa aprender sobre temas relacionados con salud, prevención o bienestar.", td: 0, ce: 0, hs: 1 },
-            { code: "I14", dim: "I", text: "Me interesa trabajar en actividades donde la interacción humana sea importante.", td: 0, ce: 0, hs: 1 },
-            { code: "I15", dim: "I", text: "Me interesa combinar herramientas tecnológicas con servicios orientados a las personas.", td: 1, ce: 0, hs: 1 },
-            { code: "I16", dim: "I", text: "Disfruto transformar ideas en proyectos concretos.", td: 1, ce: 1, hs: 0 },
-            { code: "I17", dim: "I", text: "Me interesa investigar temas que todavía no conozco.", td: 1, ce: 1, hs: 0 },
-            { code: "I18", dim: "I", text: "Me interesa identificar formas de hacer un proceso más eficiente.", td: 1, ce: 0, hs: 0 },
-            { code: "I19", dim: "I", text: "Me interesa participar en proyectos donde se prueben ideas o soluciones nuevas.", td: 1, ce: 1, hs: 0 },
-            { code: "I20", dim: "I", text: "Me interesa desarrollar soluciones que produzcan un beneficio concreto para otras personas.", td: 1, ce: 0, hs: 1 },
-
-            // APTITUDES Y HABILIDADES PERCIBIDAS (A01 - A20)
-            { code: "A01", dim: "A", text: "Tengo facilidad para aprender a utilizar herramientas digitales nuevas.", td: 1, ce: 0, hs: 0 },
-            { code: "A02", dim: "A", text: "Puedo encontrar más de una alternativa cuando una solución no funciona.", td: 1, ce: 0, hs: 0 },
-            { code: "A03", dim: "A", text: "Soy capaz de organizar información y actividades de manera ordenada.", td: 1, ce: 1, hs: 0 },
-            { code: "A04", dim: "A", text: "Puedo comparar información antes de tomar una decisión.", td: 1, ce: 0, hs: 0 },
-            { code: "A05", dim: "A", text: "Aprendo con facilidad cuando puedo practicar directamente.", td: 1, ce: 0, hs: 0 },
-            { code: "A06", dim: "A", text: "Puedo explicar una idea de manera clara a otra persona.", td: 0, ce: 1, hs: 0 },
-            { code: "A07", dim: "A", text: "Me resulta natural iniciar una conversación con personas que no conozco.", td: 0, ce: 1, hs: 0 },
-            { code: "A08", dim: "A", text: "Puedo argumentar una propuesta y responder preguntas sobre ella.", td: 0, ce: 1, hs: 0 },
-            { code: "A09", dim: "A", text: "Me adapto con rapidez cuando cambian las condiciones de una actividad.", td: 1, ce: 0, hs: 0 },
-            { code: "A10", dim: "A", text: "Puedo mantener la constancia hasta completar una tarea.", td: 1, ce: 1, hs: 1 },
-            { code: "A11", dim: "A", text: "Puedo colaborar eficazmente con personas que tienen formas de pensar diferentes.", td: 0, ce: 1, hs: 1 },
-            { code: "A12", dim: "A", text: "Puedo identificar cuándo otra persona necesita apoyo o atención.", td: 0, ce: 0, hs: 1 },
-            { code: "A13", dim: "A", text: "Encuentro maneras creativas de abordar una situación.", td: 1, ce: 0, hs: 0 },
-            { code: "A14", dim: "A", text: "Puedo seguir y aprender procedimientos nuevos con precisión.", td: 1, ce: 0, hs: 1 },
-            { code: "A15", dim: "A", text: "Puedo identificar pasos de un proceso que podrían mejorarse.", td: 1, ce: 1, hs: 0 },
-            { code: "A16", dim: "A", text: "Puedo cumplir tareas manteniendo responsabilidad y disciplina.", td: 1, ce: 1, hs: 1 },
-            { code: "A17", dim: "A", text: "Tengo curiosidad por entender cómo funcionan las cosas.", td: 1, ce: 0, hs: 0 },
-            { code: "A18", dim: "A", text: "Puedo aprender por mi cuenta utilizando recursos disponibles.", td: 1, ce: 0, hs: 0 },
-            { code: "A19", dim: "A", text: "Puedo relacionar conocimientos de diferentes áreas para resolver una situación.", td: 1, ce: 1, hs: 0 },
-            { code: "A20", dim: "A", text: "Tengo disposición y capacidad percibida para desarrollar habilidades nuevas.", td: 0, ce: 1, hs: 1 }
-        ];
-
-        /* CONFIGURACIÓN DE BLOQUES EN EL ORDEN EXACTO */
-        const BLOQUES = [
-            { id: "V", badge: "BLOQUE 1", title: "Valores Profesionales", desc: "Evalúa aspectos que consideras éticos, significativos y fundamentales en tu vida laboral.", itemsCount: 10 },
-            { id: "P", badge: "BLOQUE 2", title: "Preferencias Laborales", desc: "Refleja tus inclinaciones hacia entornos, dinámicas y modos de trabajo.", itemsCount: 10 },
-            { id: "M", badge: "BLOQUE 3", title: "Motivación Profesional", desc: "Mide tu compromiso hacia el aprendizaje continuo, superación y constancia.", itemsCount: 10 },
-            { id: "I", badge: "BLOQUE 4", title: "Intereses Vocacionales", desc: "Explora la atracción temática y funcional hacia diversas disciplinas y tareas.", itemsCount: 20 },
-            { id: "A", badge: "BLOQUE 5", title: "Aptitudes y Habilidades Percibidas", desc: "Auto-percepción sobre tus destrezas prácticas y capacidades de resolución.", itemsCount: 20 }
-        ];
-
-        /* PONDERACIONES OFICIALES */
-        const PESOS_DIMENSION = {
-            "I": 0.30, // Intereses: 30%
-            "A": 0.30, // Aptitudes: 30%
-            "V": 0.15, // Valores: 15%
-            "P": 0.15, // Preferencias: 15%
-            "M": 0.10  // Motivación: 10%
+        const totalQuestions = 5;
+        let currentQuestion = 0;
+        let scores = {
+            software: 0,
+            ventas: 0
         };
 
-        // ALMACENAMIENTO DE RESPUESTAS (Código: Valor Likert 1-5)
-        let respuestas = {};
-        let bloqueActualIndex = 0;
-
-        function iniciarTest() {
-            document.getElementById('sec-intro').classList.add('hidden');
-            document.getElementById('sec-questions').classList.remove('hidden');
-            renderizarBloque(0);
-        }
-
-        function renderizarBloque(index) {
-            bloqueActualIndex = index;
-            const config = BLOQUES[index];
-
-            // Actualizar header de bloque
-            document.getElementById('block-badge').innerText = config.badge;
-            document.getElementById('block-title').innerText = config.title;
-            document.getElementById('block-desc').innerText = config.desc;
-
-            // Filtrar ítems pertenecientes al bloque
-            const items = MATRIZ_ITEMS.filter(it => it.dim === config.id);
-            const container = document.getElementById('questions-list');
-            container.innerHTML = '';
-
-            items.forEach((item, i) => {
-                const qCard = document.createElement('div');
-                qCard.className = "bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm transition-all hover:border-slate-300";
-                
-                const currentVal = respuestas[item.code] || 0;
-
-                qCard.innerHTML = `
-                    <div class="flex items-start space-x-3 mb-3">
-                        <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-md shrink-0">${item.code}</span>
-                        <p class="text-sm font-medium text-slate-800 leading-snug">${item.text}</p>
-                    </div>
-                    <div class="grid grid-cols-5 gap-1 sm:gap-2">
-                        ${[1,2,3,4,5].map(v => `
-                            <div>
-                                <input type="radio" id="${item.code}_v${v}" name="${item.code}" value="${v}" ${currentVal === v ? 'checked' : ''} onchange="guardarRespuesta('${item.code}', ${v})" class="hidden custom-radio">
-                                <label for="${item.code}_v${v}" class="flex flex-col items-center justify-center p-2 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all text-center h-full">
-                                    <span class="text-base font-bold">${v}</span>
-                                    <span class="text-[9px] font-normal leading-tight hidden sm:block">${getLabelLikert(v)}</span>
-                                </label>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-                container.appendChild(qCard);
-            });
-
-            actualizarNavegacionBarra();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function getLabelLikert(val) {
-            switch(val) {
-                case 1: return "Total. desacuerdo";
-                case 2: return "En desacuerdo";
-                case 3: return "Neutro";
-                case 4: return "De acuerdo";
-                case 5: return "Total. acuerdo";
+        const careersData = {
+            software: {
+                title: "Tecnología Superior en Desarrollo de Software",
+                desc: "Tu perfil es analítico y orientado a la resolución lógica de problemas. Tienes el potencial ideal para convertir problemas reales en soluciones digitales, creando sistemas, aplicaciones e infraestructura tecnológica para el entorno digital."
+            },
+            ventas: {
+                title: "Tecnología Superior en Ventas Digitales",
+                desc: "Tu perfil es persuasivo, estratégico y enfocado en resultados. Tienes la visión comercial para identificar oportunidades, conectar con audiencias y liderar estrategias que impulsen el crecimiento de las empresas en entornos digitales."
             }
-        }
-
-        function guardarRespuesta(code, val) {
-            respuestas[code] = val;
-            actualizarNavegacionBarra();
-        }
-
-        function actualizarNavegacionBarra() {
-            const totalRespondidas = Object.keys(respuestas).length;
-            const porcentajeGlobal = Math.round((totalRespondidas / 70) * 100);
-            
-            document.getElementById('progress-bar').style.width = `${porcentajeGlobal}%`;
-            document.getElementById('progress-percent').innerText = `${porcentajeGlobal}% completado`;
-            document.getElementById('current-block-label').innerText = `Bloque ${bloqueActualIndex + 1} de 5: ${BLOQUES[bloqueActualIndex].title}`;
-
-            // Resaltar indicador inferior
-            BLOQUES.forEach((b, idx) => {
-                const el = document.getElementById(`step-${b.id}`);
-                if(idx === bloqueActualIndex) {
-                    el.className = "text-blue-600 font-bold underline";
-                } else {
-                    el.className = "text-slate-400";
-                }
-            });
-
-            // Estado botones
-            document.getElementById('btn-prev').disabled = (bloqueActualIndex === 0);
-            
-            const btnNext = document.getElementById('btn-next');
-            if (bloqueActualIndex === BLOQUES.length - 1) {
-                btnNext.innerHTML = `<span>Finalizar y Ver Resultado</span> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
-            } else {
-                btnNext.innerHTML = `<span>Siguiente</span> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>`;
-            }
-        }
-
-        function bloqueAnterior() {
-            if (bloqueActualIndex > 0) {
-                renderizarBloque(bloqueActualIndex - 1);
-            }
-        }
-
-        function siguienteBloque() {
-            // Verificar si se completó el bloque actual
-            const currentDim = BLOQUES[bloqueActualIndex].id;
-            const itemsBloque = MATRIZ_ITEMS.filter(it => it.dim === currentDim);
-            const pendientes = itemsBloque.filter(it => !respuestas[it.code]);
-
-            if (pendientes.length > 0) {
-                alert(`Por favor responde todas las preguntas del bloque actual (${pendientes.length} pendiente(s)) antes de continuar.`);
-                return;
-            }
-
-            if (bloqueActualIndex < BLOQUES.length - 1) {
-                renderizarBloque(bloqueActualIndex + 1);
-            } else {
-                calcularResultadosFinales();
-            }
-        }
-
-        function calcularResultadosFinales() {
-            // Estructura para almacenar desgloses por dimensión
-            let desglose = {
-                "V": { td: { bruto: 0, count: 0 }, ce: { bruto: 0, count: 0 }, hs: { bruto: 0, count: 0 } },
-                "P": { td: { bruto: 0, count: 0 }, ce: { bruto: 0, count: 0 }, hs: { bruto: 0, count: 0 } },
-                "M": { td: { bruto: 0, count: 0 }, ce: { bruto: 0, count: 0 }, hs: { bruto: 0, count: 0 } },
-                "I": { td: { bruto: 0, count: 0 }, ce: { bruto: 0, count: 0 }, hs: { bruto: 0, count: 0 } },
-                "A": { td: { bruto: 0, count: 0 }, ce: { bruto: 0, count: 0 }, hs: { bruto: 0, count: 0 } }
-            };
-
-            // 1. Recorrer y sumar Aportes Brutos y Número de ítems asignados
-            MATRIZ_ITEMS.forEach(item => {
-                const r = respuestas[item.code] || 1; // 1 a 5
-                const d = item.dim;
-
-                if (item.td === 1) {
-                    desglose[d].td.bruto += r * 1;
-                    desglose[d].td.count += 1;
-                }
-                if (item.ce === 1) {
-                    desglose[d].ce.bruto += r * 1;
-                    desglose[d].ce.count += 1;
-                }
-                if (item.hs === 1) {
-                    desglose[d].hs.bruto += r * 1;
-                    desglose[d].hs.count += 1;
-                }
-            });
-
-            // 2. Calcular Puntajes Normalizados (0-100%) por Dimensión y Perfil
-            // Formula: ND(d,p) = (Suma Aportes / (N.º ítems asignados * 5)) * 100
-            let norm = {
-                "V": { td: 0, ce: 0, hs: 0 },
-                "P": { td: 0, ce: 0, hs: 0 },
-                "M": { td: 0, ce: 0, hs: 0 },
-                "I": { td: 0, ce: 0, hs: 0 },
-                "A": { td: 0, ce: 0, hs: 0 }
-            };
-
-            Object.keys(desglose).forEach(d => {
-                norm[d].td = desglose[d].td.count > 0 ? (desglose[d].td.bruto / (desglose[d].td.count * 5)) * 100 : 0;
-                norm[d].ce = desglose[d].ce.count > 0 ? (desglose[d].ce.bruto / (desglose[d].ce.count * 5)) * 100 : 0;
-                norm[d].hs = desglose[d].hs.count > 0 ? (desglose[d].hs.bruto / (desglose[d].hs.count * 5)) * 100 : 0;
-            });
-
-            // 3. Aplicar Ponderación Final
-            // PF = (I * 0.30) + (A * 0.30) + (V * 0.15) + (P * 0.15) + (M * 0.10)
-            let finalTD = 0, finalCE = 0, finalHS = 0;
-
-            Object.keys(PESOS_DIMENSION).forEach(d => {
-                const w = PESOS_DIMENSION[d];
-                finalTD += norm[d].td * w;
-                finalCE += norm[d].ce * w;
-                finalHS += norm[d].hs * w;
-            });
-
-            // Ordenar perfiles
-            let ranking = [
-                { code: "TD", name: "Tecnológico Digital", score: finalTD },
-                { code: "CE", name: "Comercial Empresarial", score: finalCE },
-                { code: "HS", name: "Humano, Salud y Servicio", score: finalHS }
-            ].sort((a, b) => b.score - a.score);
-
-            const diff = ranking[0].score - ranking[1].score;
-            const esDual = diff <= 5.0;
-
-            // Determinar dimensión más alta global
-            let maxDim = "I";
-            let maxDimVal = 0;
-            Object.keys(norm).forEach(d => {
-                const avg = (norm[d].td + norm[d].ce + norm[d].hs) / 3;
-                if (avg > maxDimVal) {
-                    maxDimVal = avg;
-                    maxDim = d;
-                }
-            });
-
-            // Renderizar Vista de Resultados
-            mostrarPantallaResultados(ranking, esDual, diff, norm, desglose, finalTD, finalCE, finalHS, maxDim);
-        }
-
-        function mostrarPantallaResultados(ranking, esDual, diff, norm, desglose, finalTD, finalCE, finalHS, maxDim) {
-            document.getElementById('sec-questions').classList.add('hidden');
-            document.getElementById('progress-container').classList.add('hidden');
-            document.getElementById('sec-results').classList.remove('hidden');
-
-            // 1. Mensaje público orientativo
-            const resTitle = document.getElementById('res-profile-title');
-            const resDesc = document.getElementById('res-profile-desc');
-
-            if (esDual) {
-                resTitle.innerText = `Perfil Dual: ${ranking[0].name} / ${ranking[1].name}`;
-                resDesc.innerText = `Tus respuestas reflejan una afinidad alta y muy equilibrada entre dos campos clave. Demuestras flexibilidad para integrar competencias de ambas áreas en tu desarrollo vocacional.`;
-            } else {
-                resTitle.innerText = `Perfil ${ranking[0].name}`;
-                if (ranking[0].code === 'TD') {
-                    resDesc.innerText = `Tus respuestas muestran una marcada afinidad hacia actividades tecnológicas, innovación, análisis de sistemas y solución lógica de problemas cotidianos mediante herramientas digitales.`;
-                } else if (ranking[0].code === 'CE') {
-                    resDesc.innerText = `Tus respuestas destacan hacia actividades de comunicación, gestión de oportunidades, negociación, emprendimiento y relacionamiento con clientes o mercados.`;
-                } else {
-                    resDesc.innerText = `Tus respuestas indican un fuerte enfoque hacia la atención de personas, bienestar integral, servicio social, salud y la interacción humana propositiva.`;
-                }
-            }
-
-            // 2. Actualizar Barras de Afinidad
-            document.getElementById('bar-val-td').innerText = `${finalTD.toFixed(1)}%`;
-            document.getElementById('bar-fill-td').style.width = `${finalTD.toFixed(1)}%`;
-
-            document.getElementById('bar-val-ce').innerText = `${finalCE.toFixed(1)}%`;
-            document.getElementById('bar-fill-ce').style.width = `${finalCE.toFixed(1)}%`;
-
-            document.getElementById('bar-val-hs').innerText = `${finalHS.toFixed(1)}%`;
-            document.getElementById('bar-fill-hs').style.width = `${finalHS.toFixed(1)}%`;
-
-            // 3. Generar enlace prellenado a WhatsApp
-            const perfilTexto = esDual ? `Perfil Dual (${ranking[0].code}/${ranking[1].code})` : `Perfil ${ranking[0].name} (${ranking[0].code})`;
-            const mensajeWa = encodeURIComponent(`Hola, acabo de completar el Test Vocacional TEPV-ASCEND. Mi resultado principal fue: ${perfilTexto} con ${ranking[0].score.toFixed(1)}% de afinidad. Me gustaría agendar una asesoría para revisar las opciones académicas sugeridas.`);
-            document.getElementById('btn-whatsapp').href = `https://wa.me/?text=${mensajeWa}`;
-
-            // 4. Llenar Métricas del Modo Asesor
-            document.getElementById('m-diff').innerText = `${diff.toFixed(2)}%`;
-            document.getElementById('m-dual').innerText = esDual ? "SÍ (<= 5.0%)" : "NO";
-            
-            const mapDimName = { V: "Valores", P: "Preferencias", M: "Motivación", I: "Intereses", A: "Aptitudes" };
-            document.getElementById('m-top-dim').innerText = mapDimName[maxDim] || maxDim;
-
-            document.getElementById('m-final-td').innerText = `${finalTD.toFixed(2)}%`;
-            document.getElementById('m-final-ce').innerText = `${finalCE.toFixed(2)}%`;
-            document.getElementById('m-final-hs').innerText = `${finalHS.toFixed(2)}%`;
-
-            // Llenar tabla de desglose
-            const tbody = document.getElementById('asesor-table-body');
-            tbody.innerHTML = '';
-
-            const dimNames = [
-                { id: "I", name: "Intereses Vocacionales", peso: "30%" },
-                { id: "A", name: "Aptitudes y Habilidades", peso: "30%" },
-                { id: "V", name: "Valores Profesionales", peso: "15%" },
-                { id: "P", name: "Preferencias Laborales", peso: "15%" },
-                { id: "M", name: "Motivación Profesional", peso: "10%" }
-            ];
-
-            dimNames.forEach(d => {
-                const tr = document.createElement('tr');
-                const maxTD = desglose[d.id].td.count * 5;
-                const maxCE = desglose[d.id].ce.count * 5;
-                const maxHS = desglose[d.id].hs.count * 5;
-
-                tr.innerHTML = `
-                    <td class="p-2.5 font-medium">${d.name}</td>
-                    <td class="p-2.5 font-semibold text-slate-500">${d.peso}</td>
-                    <td class="p-2.5">${desglose[d.id].td.bruto}/${maxTD} &rarr; <b>${norm[d.id].td.toFixed(1)}%</b></td>
-                    <td class="p-2.5">${desglose[d.id].ce.bruto}/${maxCE} &rarr; <b>${norm[d.id].ce.toFixed(1)}%</b></td>
-                    <td class="p-2.5">${desglose[d.id].hs.bruto}/${maxHS} &rarr; <b>${norm[d.id].hs.toFixed(1)}%</b></td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function toggleModoAsesor() {
-            const content = document.getElementById('asesor-content');
-            const icon = document.getElementById('icon-asesor-arrow');
-            content.classList.toggle('hidden');
-            icon.classList.toggle('rotate-180');
-        }
-
-        function abrirModalDemo() {
-            document.getElementById('modal-demo').classList.remove('hidden');
-        }
-
-        function cerrarModalDemo() {
-            document.getElementById('modal-demo').classList.add('hidden');
-        }
-
-        function ejecutarDemo(tipo) {
-            cerrarModalDemo();
-            respuestas = {};
-
-            MATRIZ_ITEMS.forEach(item => {
-                if (tipo === 'TD') {
-                    // Favorecer TD
-                    respuestas[item.code] = item.td === 1 ? (Math.floor(Math.random() * 2) + 4) : (Math.floor(Math.random() * 2) + 1);
-                } else if (tipo === 'CE') {
-                    // Favorecer CE
-                    respuestas[item.code] = item.ce === 1 ? (Math.floor(Math.random() * 2) + 4) : (Math.floor(Math.random() * 2) + 1);
-                } else if (tipo === 'HS') {
-                    // Favorecer HS
-                    respuestas[item.code] = item.hs === 1 ? (Math.floor(Math.random() * 2) + 4) : (Math.floor(Math.random() * 2) + 1);
-                } else if (tipo === 'DUAL') {
-                    // Forzar puntajes casi idénticos en TD y CE
-                    if (item.td === 1 || item.ce === 1) {
-                        respuestas[item.code] = 5;
-                    } else {
-                        respuestas[item.code] = 2;
-                    }
-                } else {
-                    // Completamente aleatorio
-                    respuestas[item.code] = Math.floor(Math.random() * 5) + 1;
-                }
-            });
-
-            // Saltar directo a resultados
-            calcularResultadosFinales();
-        }
-
-        function reiniciarTest() {
-            if (Object.keys(respuestas).length > 0) {
-                if(!confirm("¿Estás seguro de que deseas reiniciar el cuestionario? Se borrarán todas las respuestas.")) return;
-            }
-            respuestas = {};
-            bloqueActualIndex = 0;
-            document.getElementById('sec-results').classList.add('hidden');
-            document.getElementById('sec-questions').classList.add('hidden');
-            document.getElementById('sec-intro').classList.remove('hidden');
-            document.getElementById('progress-container').classList.remove('hidden');
-            document.getElementById('progress-bar').style.width = '0%';
-            document.getElementById('progress-percent').innerText = '0% completado';
-        }
-
-        // Inicialización al cargar la página
-        window.onload = function() {
-            actualizarNavegacionBarra();
         };
+
+        function answerQuestion(type) {
+            scores[type]++;
+            currentQuestion++;
+
+            if (currentQuestion < totalQuestions) {
+                showQuestion(currentQuestion);
+                updateProgress();
+            } else {
+                showResult();
+            }
+        }
+
+        function showQuestion(index) {
+            const cards = document.querySelectorAll('.question-card');
+            cards.forEach((card, i) => {
+                card.classList.toggle('active', i === index);
+            });
+        }
+
+        function updateProgress() {
+            const stepText = document.getElementById('progress-step');
+            const percentText = document.getElementById('progress-percent');
+            const progressBar = document.getElementById('progress-bar');
+
+            const current = currentQuestion + 1;
+            const percentage = Math.round((current / totalQuestions) * 100);
+
+            stepText.textContent = `PREGUNTA ${current} DE ${totalQuestions}`;
+            percentText.textContent = `${percentage}%`;
+            progressBar.style.width = `${percentage}%`;
+        }
+
+        function showResult() {
+            document.getElementById('questions-wrapper').style.display = 'none';
+            document.getElementById('progress-container').style.display = 'none';
+
+            // Determinar ganadora
+            const winningCareerKey = scores.software >= scores.ventas ? 'software' : 'ventas';
+            const winningCareer = careersData[winningCareerKey];
+            const percentage = Math.round((scores[winningCareerKey] / totalQuestions) * 100);
+
+            document.getElementById('career-title').textContent = winningCareer.title;
+            document.getElementById('career-compat').textContent = `Afinidad detectada: ${percentage}% con tu perfil`;
+            document.getElementById('career-desc').textContent = winningCareer.desc;
+
+            document.getElementById('result-screen').style.display = 'block';
+        }
+
+        function restartTest() {
+            currentQuestion = 0;
+            scores.software = 0;
+            scores.ventas = 0;
+
+            document.getElementById('questions-wrapper').style.display = 'block';
+            document.getElementById('progress-container').style.display = 'block';
+            document.getElementById('result-screen').style.display = 'none';
+
+            showQuestion(0);
+            updateProgress();
+        }
     </script>
 </body>
 </html>
